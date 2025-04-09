@@ -1,35 +1,59 @@
-<h1>Buscar Película</h1>
-<form method="post">
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">🎬 Buscar Película</h1>
+
+<form method="post" class="mb-4">
     {% csrf_token %}
-    <input type="text" name="titulo" placeholder="Ej: Interstellar" required>
-    <button type="submit">Buscar</button>
+    <div class="input-group">
+        <input type="text" name="titulo" class="form-control" placeholder="Ej: Interstellar" required>
+        <button class="btn btn-primary" type="submit">Buscar</button>
+    </div>
 </form>
 
 {% if pelicula %}
-    <hr>
-    <h2>{{ pelicula.Title }} ({{ pelicula.Year }})</h2>
-    <img src="{{ pelicula.Poster }}" width="200">
-    <p><strong>Género:</strong> {{ pelicula.Genre }}</p>
-    <p><strong>Director:</strong> {{ pelicula.Director }}</p>
+    <div class="card mb-4">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="{{ pelicula.Poster }}" class="img-fluid rounded-start" alt="Poster">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ pelicula.Title }} ({{ pelicula.Year }})</h5>
+                    <p class="card-text"><strong>Género:</strong> {{ pelicula.Genre }}</p>
+                    <p class="card-text"><strong>Director:</strong> {{ pelicula.Director }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <h3>Agregar Reseña</h3>
-    <form method="post" action="{% url 'agregar_reseña' %}">
+    <h3 class="mb-3">Agregar Reseña</h3>
+    <form method="post" action="{% url 'agregar_reseña' %}" class="mb-4">
         {% csrf_token %}
         <input type="hidden" name="titulo" value="{{ pelicula.Title }}">
-        <input type="text" name="usuario" placeholder="Tu nombre" required><br>
-        <textarea name="comentario" placeholder="Escribe tu reseña" required></textarea><br>
-        <input type="number" name="puntuacion" min="1" max="10" required><br>
-        <button type="submit">Enviar reseña</button>
+        <div class="mb-3">
+            <input type="text" name="usuario" class="form-control" placeholder="Tu nombre" required>
+        </div>
+        <div class="mb-3">
+            <textarea name="comentario" class="form-control" placeholder="Escribe tu reseña" required></textarea>
+        </div>
+        <div class="mb-3">
+            <input type="number" name="puntuacion" class="form-control" min="1" max="10" placeholder="Puntaje del 1 al 10" required>
+        </div>
+        <button class="btn btn-success" type="submit">Enviar reseña</button>
     </form>
 
-    <h3>Reseñas</h3>
+    <h3 class="mb-3">Reseñas</h3>
     {% if reseñas %}
-        <ul>
+        <ul class="list-group">
             {% for r in reseñas %}
-                <li><strong>{{ r.usuario }}</strong>: {{ r.comentario }} ({{ r.puntuacion }}/10)</li>
+                <li class="list-group-item">
+                    <strong>{{ r.usuario }}</strong>: {{ r.comentario }} <span class="badge bg-secondary">{{ r.puntuacion }}/10</span>
+                </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>No hay reseñas aún.</p>
+        <p class="text-muted">No hay reseñas aún.</p>
     {% endif %}
 {% endif %}
+{% endblock %}
