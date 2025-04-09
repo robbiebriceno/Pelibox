@@ -11,7 +11,7 @@
     </div>
 </form>
 
-{% if galeria %}
+{% if not pelicula and galeria %}
     <h2 class="mb-4">🎞️ Películas </h2>
     <div class="row row-cols-2 row-cols-md-4 g-4 mb-5">
         {% for peli in galeria %}
