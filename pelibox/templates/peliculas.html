@@ -11,6 +11,24 @@
     </div>
 </form>
 
+{% if galeria %}
+    <h2 class="mb-4">🎞️ Películas </h2>
+    <div class="row row-cols-2 row-cols-md-4 g-4 mb-5">
+        {% for peli in galeria %}
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{{ peli.poster }}" class="card-img-top" alt="{{ peli.titulo }}">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ peli.titulo }}</h6>
+                        <p class="card-text"><small class="text-muted">{{ peli.año }} · {{ peli.genero }}</small></p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
 {% if pelicula %}
     <div class="card mb-4">
         <div class="row g-0">

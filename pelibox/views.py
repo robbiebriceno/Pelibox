@@ -7,6 +7,7 @@ API_KEY = '7a921c76'  # 🔁 Reemplaza por tu key de https://www.omdbapi.com/api
 def buscar_pelicula(request):
     datos_pelicula = None
     reseñas = None
+    peliculas_con_reseñas = []
 
     if request.method == 'POST':
         titulo = request.POST.get('titulo')
@@ -16,7 +17,28 @@ def buscar_pelicula(request):
             datos_pelicula = response.json()
             reseñas = Reseña.objects.filter(titulo__iexact=titulo)
 
-    return render(request, 'peliculas.html', {'pelicula': datos_pelicula, 'reseñas': reseñas})
+    # Obtener todos los títulos únicos con reseñas
+    titulos_unicos = Reseña.objects.values_list('titulo', flat=True).distinct()
+
+    for titulo in titulos_unicos:
+        url = f'http://www.omdbapi.com/?t={titulo}&apikey={API_KEY}'
+        r = requests.get(url)
+        if r.status_code == 200:
+            data = r.json()
+            if data.get("Response") == "True":
+                peliculas_con_reseñas.append({
+                    "titulo": titulo,
+                    "poster": data.get("Poster"),
+                    "año": data.get("Year"),
+                    "genero": data.get("Genre")
+                })
+
+    return render(request, 'peliculas.html', {
+        'pelicula': datos_pelicula,
+        'reseñas': reseñas,
+        'galeria': peliculas_con_reseñas
+    })
+
 
 def agregar_reseña(request):
     if request.method == 'POST':
