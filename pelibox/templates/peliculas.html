@@ -1,0 +1,35 @@
+<h1>Buscar Película</h1>
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="titulo" placeholder="Ej: Interstellar" required>
+    <button type="submit">Buscar</button>
+</form>
+
+{% if pelicula %}
+    <hr>
+    <h2>{{ pelicula.Title }} ({{ pelicula.Year }})</h2>
+    <img src="{{ pelicula.Poster }}" width="200">
+    <p><strong>Género:</strong> {{ pelicula.Genre }}</p>
+    <p><strong>Director:</strong> {{ pelicula.Director }}</p>
+
+    <h3>Agregar Reseña</h3>
+    <form method="post" action="{% url 'agregar_reseña' %}">
+        {% csrf_token %}
+        <input type="hidden" name="titulo" value="{{ pelicula.Title }}">
+        <input type="text" name="usuario" placeholder="Tu nombre" required><br>
+        <textarea name="comentario" placeholder="Escribe tu reseña" required></textarea><br>
+        <input type="number" name="puntuacion" min="1" max="10" required><br>
+        <button type="submit">Enviar reseña</button>
+    </form>
+
+    <h3>Reseñas</h3>
+    {% if reseñas %}
+        <ul>
+            {% for r in reseñas %}
+                <li><strong>{{ r.usuario }}</strong>: {{ r.comentario }} ({{ r.puntuacion }}/10)</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay reseñas aún.</p>
+    {% endif %}
+{% endif %}
